@@ -1,1 +1,41 @@
+Contestants are provided with an executable file and are asked to run the program on a server hosting the file, nc ctf.battelle.org 30041. I am also attaching the exectuable for everyone to try.
 
+You will need Ghidra to get more information about what is happening in the executable. 
+If you do not have Ghidra Installed on your system please follow : https://ghidra-sre.org/ and https://ghidra-sre.org/InstallationGuide.html#Install guide to install ghidra on your system.
+
+Ghidra needs JDK 11+, so you will also need to install jdk 11. 
+
+After you start Ghidra, Start a new non-shared project. Open the project and select code browse.
+A new window will open here you need to select import file and now import the .exe or .elf file we are interested in. Here it will be the The_Chest.elf file.
+
+Now, first jump to the main function, this can be found on left hand side panel under Symbol Tree --> functions
+
+
+void main(void)
+{
+  puts("Greetings traveler!");
+  puts(
+      "We have found this mysterious Chest! there appears to be a bunch of numbered buttons on the t op"
+      );
+  puts("maybe you can help us identify the correct order to press them.");
+  puts("");
+  ask_for_buttons();
+  return;
+}
+
+Here the main function calls, ask_for_buttons(). So let's jump to the function def of ask_for_buttons():
+You will see following of interest code:
+  puts("What is the correct sequence?");
+  gets((char *)&local_108);
+  pcVar1 = strstr((char *)&local_108,"12345 wow I have the same combination on my luggage!");
+  if (pcVar1 == (char *)0x0) {
+    puts("That didn\'t seem to work...");
+  }
+  else {
+    the_chest_opens();
+  }
+
+There is a function call strstr, you can either check the man page or google how the function works. This would give you a clue that to get the answer you need to type:
+12345 wow I have the same combination on my luggage!
+
+Now run the executable or visit the server which is hosting the application and provide the following string as input. And you will get your flag.
